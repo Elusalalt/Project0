@@ -21,7 +21,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
             Integer newId = libraryMemberDAO.create(libraryMemberEntity);
             return newId;
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return -1;
         }
     }
@@ -36,7 +36,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
 
             return libraryMemberEntity;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -47,7 +47,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
             List<LibraryMemberEntity> libraryMemberEntities = libraryMemberDAO.findAll();
             return libraryMemberEntities;
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
@@ -58,7 +58,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
             return libraryMemberDAO.updateById(newEntity);
         }catch(SQLException e){
             System.out.println("Unable to update member, SQL Exception thrown");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return null;
     }
@@ -69,7 +69,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
             return libraryMemberDAO.deleteById(id);
         }catch(SQLException e){
             System.out.println("unable to delete, SQL exception");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return false;
     }
@@ -101,7 +101,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
             }
 
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -120,7 +120,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
                 throw new RuntimeException("LibraryMemberEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -130,7 +130,7 @@ public class LibraryMemberService implements ServiceInterface<LibraryMemberEntit
             Optional<LibraryMemberEntity> libraryMemberEntity = libraryMemberDAO.findByLibraryMemberName(libraryMemberName);
             return libraryMemberEntity;
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }

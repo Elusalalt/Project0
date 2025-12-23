@@ -80,13 +80,10 @@ public class GenreDAO implements DAOInterface<GenreEntity>{
         String sql = "DELETE FROM genre WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,id);
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return true;
-                }
-            }
+            stmt.executeUpdate();
+            return true;
         }
-        return false;
+        //return false;
     }
     public Optional<GenreEntity> findByGenreName(String genreName) throws SQLException{
         String sql = "SELECT * FROM genre WHERE genre = ?";

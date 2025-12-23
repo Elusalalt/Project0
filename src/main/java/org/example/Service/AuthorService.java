@@ -19,7 +19,7 @@ public class AuthorService implements ServiceInterface<AuthorEntity,Author>{
             Integer newId = authorDAO.create(authorEntity);
             return newId;
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return -1;
         }
     }
@@ -34,7 +34,7 @@ public class AuthorService implements ServiceInterface<AuthorEntity,Author>{
 
             return authorEntity;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -45,7 +45,7 @@ public class AuthorService implements ServiceInterface<AuthorEntity,Author>{
             List<AuthorEntity> authorEntities = authorDAO.findAll();
             return authorEntities;
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
@@ -61,7 +61,7 @@ public class AuthorService implements ServiceInterface<AuthorEntity,Author>{
             return authorDAO.deleteById(id);
         }catch(SQLException e){
             System.out.println("unable to delete, SQL exception");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return false;
     }
@@ -92,7 +92,7 @@ public class AuthorService implements ServiceInterface<AuthorEntity,Author>{
             }
 
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -111,7 +111,7 @@ public class AuthorService implements ServiceInterface<AuthorEntity,Author>{
                 throw new RuntimeException("AuthorEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -121,7 +121,7 @@ public class AuthorService implements ServiceInterface<AuthorEntity,Author>{
             Optional<AuthorEntity> authorEntity = authorDAO.findByAuthorName(authorName);
             return authorEntity;
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }

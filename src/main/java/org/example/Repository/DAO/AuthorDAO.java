@@ -81,13 +81,10 @@ public class AuthorDAO implements DAOInterface<AuthorEntity> {
         String sql = "DELETE FROM author WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,id);
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return true;
-                }
-            }
+            stmt.executeUpdate();
+            return true;
         }
-        return false;
+        //return false;
     }
     public Optional<AuthorEntity> findByAuthorName(String authorName) throws SQLException{
         String sql = "SELECT * FROM author WHERE author = ?";

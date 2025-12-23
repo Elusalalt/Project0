@@ -86,14 +86,10 @@ public class CheckedOutBookDAO implements DAOInterface<CheckedOutBookEntity>{   
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setDouble(1,checkedOutBookEntity.getFees());
             stmt.setInt(2,checkedOutBookEntity.getId());
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return checkedOutBookEntity;
-                }
-
-            }
+            stmt.executeUpdate();
+            return checkedOutBookEntity;
         }
-        return null;
+        //return null;
     }
 
     @Override
@@ -101,14 +97,10 @@ public class CheckedOutBookDAO implements DAOInterface<CheckedOutBookEntity>{   
         String sql = "DELETE FROM checkedOutBook WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,id);
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return true;
-                }
-
-            }
+            stmt.executeUpdate();
+            return true;
         }
-        return false;
+        //return false;
     }
     public List<CheckedOutBookEntity> findByCheckedOutBookBookID(Integer bookID) throws SQLException{
         String sql = "SELECT * FROM checkedOutBook WHERE book_id = ?";

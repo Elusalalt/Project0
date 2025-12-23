@@ -74,20 +74,17 @@ public class LibraryMemberDAO implements DAOInterface<LibraryMemberEntity> {
 
     @Override
     public LibraryMemberEntity updateById(LibraryMemberEntity libraryMemberEntity) throws SQLException {                             //IMPLEMENT THIS
-        String sql = "UPDATE checkedOutBook SET memberName=?, fees=?, WHERE id = ?";
+        String sql = "UPDATE libraryMember SET memberName=?, fees=? WHERE id = ?";
 
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1,libraryMemberEntity.getName());
             stmt.setDouble(2,libraryMemberEntity.getFeesOwed());
             stmt.setInt(3,libraryMemberEntity.getId());
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return libraryMemberEntity;
-                }
+            stmt.executeUpdate();
 
-            }
+            return libraryMemberEntity;
         }
-        return null;
+        //return null;
     }
 
     @Override
@@ -96,12 +93,9 @@ public class LibraryMemberDAO implements DAOInterface<LibraryMemberEntity> {
         String sql = "DELETE FROM libraryMember WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,id);
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return true;
-                }
-            }
-        }return false;
+            stmt.executeUpdate();
+            return true;
+        }//return false;
     }
     public Optional<LibraryMemberEntity> findByLibraryMemberName(String libraryMemberName) throws SQLException{         //THIS NEEDS MORE WORK (make into a list?)
         String sql = "SELECT * FROM libraryMember WHERE memberName = ?";

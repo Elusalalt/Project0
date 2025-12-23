@@ -1,6 +1,5 @@
 package org.example.Repository.DAO;
 
-import org.example.Repository.Entities.AuthorEntity;
 
 import java.sql.SQLException;
 import java.util.List;

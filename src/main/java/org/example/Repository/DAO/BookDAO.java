@@ -14,12 +14,11 @@ public class BookDAO implements DAOInterface<BookEntity>{
 
     @Override
     public Integer create(BookEntity bookEntity) throws SQLException {
-        String sql = "INSERT INTO book (title, dewey, author_id, genre_id, publishDate, totalOwned, numberCheckedOut) VALUES (?,?,?,?,?,?,?) RETURNING id";
+        String sql = "INSERT INTO book (title, author_id, genre_id, publishDate, totalOwned, numberCheckedOut) VALUES (?,?,?,?,?,?) RETURNING id";
 
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
 
             stmt.setString(1, bookEntity.getTitle());
-            stmt.setString(2, bookEntity.getDewey());
             stmt.setInt(3,bookEntity.getAuthorID());
             stmt.setInt(4, bookEntity.getGenreID());
             stmt.setDate(5, Date.valueOf(bookEntity.getPublishDate()));
@@ -50,8 +49,7 @@ public class BookDAO implements DAOInterface<BookEntity>{
                     bookEntity.setAuthorID(rs.getInt("author_id"));
                     bookEntity.setGenreID(rs.getInt("genre_id"));
                     bookEntity.setTitle(rs.getString("title"));
-                    bookEntity.setDewey(rs.getString("dewey"));
-                    bookEntity.setNumberCheckedOut(rs.getInt("totalOwned"));
+                    bookEntity.setTotalOwnedByLibrary(rs.getInt("totalOwned"));
                     bookEntity.setPublishDate(rs.getDate("publishDate").toLocalDate());
                     bookEntity.setNumberCheckedOut(rs.getInt("numberCheckedOut"));
                     return Optional.of(bookEntity);
@@ -76,8 +74,7 @@ public class BookDAO implements DAOInterface<BookEntity>{
                 bookEntity.setAuthorID(rs.getInt("author_id"));
                 bookEntity.setGenreID(rs.getInt("genre_id"));
                 bookEntity.setTitle(rs.getString("title"));
-                bookEntity.setDewey(rs.getString("dewey"));
-                bookEntity.setNumberCheckedOut(rs.getInt("totalOwned"));
+                bookEntity.setTotalOwnedByLibrary(rs.getInt("totalOwned"));
                 bookEntity.setPublishDate(rs.getDate("publishDate").toLocalDate());
                 bookEntity.setNumberCheckedOut(rs.getInt("numberCheckedOut"));
                 bookEntities.add(bookEntity);
@@ -89,21 +86,17 @@ public class BookDAO implements DAOInterface<BookEntity>{
 
     @Override
     public BookEntity updateById(BookEntity bookEntity) throws SQLException {
-        String sql = "UPDATE checkedOutBook SET totalOwned=?, numberCheckedOut=?,dewey=? WHERE id = ?";
+        String sql = "UPDATE book SET totalOwned=?, numberCheckedOut=? WHERE id = ?";
 
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,bookEntity.getTotalOwnedByLibrary());
             stmt.setInt(2,bookEntity.getNumberCheckedOut());
-            stmt.setString(3,bookEntity.getDewey());
-            stmt.setInt(4,bookEntity.getId());
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return bookEntity;
-                }
+            stmt.setInt(3,bookEntity.getId());
+            stmt.executeUpdate();
+            return bookEntity;
 
-            }
         }
-        return null;
+        //return null;
     }
 
     @Override
@@ -111,13 +104,10 @@ public class BookDAO implements DAOInterface<BookEntity>{
         String sql = "DELETE FROM book WHERE id = ?";
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1,id);
-            try(ResultSet rs = stmt.executeQuery()){
-                if (rs.next()){
-                    return true;
-                }
-            }
+            stmt.executeUpdate();
+            return true;
         }
-        return false;
+        //return false;
     }
     public Optional<BookEntity> findByBookTitle(String title) throws SQLException{
         String sql = "SELECT * FROM book WHERE title = ?";
@@ -132,8 +122,7 @@ public class BookDAO implements DAOInterface<BookEntity>{
                     bookEntity.setAuthorID(rs.getInt("author_id"));
                     bookEntity.setGenreID(rs.getInt("genre_id"));
                     bookEntity.setTitle(rs.getString("title"));
-                    bookEntity.setDewey(rs.getString("dewey"));
-                    bookEntity.setNumberCheckedOut(rs.getInt("totalOwned"));
+                    bookEntity.setTotalOwnedByLibrary(rs.getInt("totalOwned"));
                     bookEntity.setPublishDate(rs.getDate("publishDate").toLocalDate());
                     bookEntity.setNumberCheckedOut(rs.getInt("numberCheckedOut"));
                     return Optional.of(bookEntity);
@@ -154,8 +143,7 @@ public class BookDAO implements DAOInterface<BookEntity>{
                     bookEntity.setAuthorID(rs.getInt("author_id"));
                     bookEntity.setGenreID(rs.getInt("genre_id"));
                     bookEntity.setTitle(rs.getString("title"));
-                    bookEntity.setDewey(rs.getString("dewey"));
-                    bookEntity.setNumberCheckedOut(rs.getInt("totalOwned"));
+                    bookEntity.setTotalOwnedByLibrary(rs.getInt("totalOwned"));
                     bookEntity.setPublishDate(rs.getDate("publishDate").toLocalDate());
                     bookEntity.setNumberCheckedOut(rs.getInt("numberCheckedOut"));
                     bookEntities.add(bookEntity);
@@ -180,8 +168,7 @@ public class BookDAO implements DAOInterface<BookEntity>{
                     bookEntity.setAuthorID(rs.getInt("author_id"));
                     bookEntity.setGenreID(rs.getInt("genre_id"));
                     bookEntity.setTitle(rs.getString("title"));
-                    bookEntity.setDewey(rs.getString("dewey"));
-                    bookEntity.setNumberCheckedOut(rs.getInt("totalOwned"));
+                    bookEntity.setTotalOwnedByLibrary(rs.getInt("totalOwned"));
                     bookEntity.setPublishDate(rs.getDate("publishDate").toLocalDate());
                     bookEntity.setNumberCheckedOut(rs.getInt("numberCheckedOut"));
                     bookEntities.add(bookEntity);

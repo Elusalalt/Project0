@@ -1,6 +1,5 @@
 package org.example.Repository.Entities;
 
-import org.example.Repository.DAO.LibraryMemberDAO;
 
 public class LibraryMemberEntity {
     private Integer id;

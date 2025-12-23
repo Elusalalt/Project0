@@ -1,16 +1,18 @@
 package org.example.Service;
 
 import org.example.Repository.DAO.CheckedOutBookDAO;
+import org.example.Repository.Entities.BookEntity;
 import org.example.Repository.Entities.CheckedOutBookEntity;
+import org.example.Repository.Entities.LibraryMemberEntity;
 import org.example.Service.Models.Book;
 import org.example.Service.Models.CheckedOutBook;
 import org.example.Service.Models.LibraryMember;
 
+import javax.swing.text.html.Option;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +31,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
             Integer newId = checkedOutBookDAO.create(checkedOutBookEntity);
             return newId;
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return -1;
         }
     }
@@ -44,7 +46,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
 
             return checkedOutBookEntity;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -55,7 +57,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
             List<CheckedOutBookEntity> checkedOutBookEntities = checkedOutBookDAO.findAll();
             return checkedOutBookEntities;
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
@@ -66,7 +68,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
             return checkedOutBookDAO.updateById(newEntity);
         }catch(SQLException e){
             System.out.println("Unable to update member, SQL Exception thrown");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return null;
     }
@@ -77,7 +79,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
             return checkedOutBookDAO.deleteById(id);
         }catch(SQLException e){
             System.out.println("unable to delete, SQL exception");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return false;
     }
@@ -108,10 +110,13 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
         }catch(Exception e){
             System.out.println("unable to find library member associated with this checked out book");
         }
+        checkedOutBook.setCheckedOutDate(checkedOutBookEntity.getCheckedOutDate());
+        checkedOutBook.setFees(checkedOutBookEntity.getFees());
         return Optional.of(checkedOutBook);
     }
     public CheckedOutBookEntity convertModelToEntity(CheckedOutBook checkedOutBook){
         CheckedOutBookEntity checkedOutBookEntity= new CheckedOutBookEntity();
+        checkedOutBookEntity.setId(checkedOutBook.getId());
         checkedOutBookEntity.setBookID(checkedOutBook.getBook().getId());
         checkedOutBookEntity.setLibraryMemberID(checkedOutBook.getLibraryMember().getId());
         checkedOutBookEntity.setCheckedOutDate(checkedOutBook.getCheckedOutDate());
@@ -143,6 +148,8 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
             } catch (Exception e) {
                 System.out.println("unable to find library member associated with this checked out book. ID: " + checkedOutBookEntity.getLibraryMemberID());
             }
+            checkedOutBook.setCheckedOutDate(checkedOutBookEntity.getCheckedOutDate());
+            checkedOutBook.setFees(checkedOutBookEntity.getFees());
             checkedOutBooks.add(checkedOutBook);
         }
         return checkedOutBooks;
@@ -164,7 +171,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
             }
 
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -180,7 +187,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
                 throw new RuntimeException("CheckedOutBookEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return checkedOutBooks;
         }
     }
@@ -195,7 +202,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
             }
 
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
 
         }
         return checkedOutBookEntities;
@@ -211,7 +218,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
                 //throw new RuntimeException("CheckedOutBookEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return checkedOutBooks;
         }
         return checkedOutBooks;
@@ -221,7 +228,7 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
         try{
             return checkedOutBookDAO.findByCheckedOutBookByLibraryMemberID(libraryMemberID);
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
 
         }
         return checkedOutBookEntities;
@@ -290,6 +297,10 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
         checkedOutBook.setBook(book);
         checkedOutBook.setCheckedOutDate(LocalDate.now());
         checkedOutBook.setId(createEntity(convertModelToEntity(checkedOutBook)));
+
+        BookEntity bookEntity = bookService.getEntityById(book.getId()).get();
+        bookEntity.setNumberCheckedOut(bookEntity.getNumberCheckedOut()+1);
+        bookService.updateEntity(book.getId(), bookEntity);
         return Optional.of(checkedOutBook);
 
     }
@@ -298,11 +309,17 @@ public class CheckedOutBookService implements ServiceInterface<CheckedOutBookEnt
         try{
             Double fees = calculateFeesOwedOnCheckedOutBook(checkedOutBook);
             checkedOutBook.getLibraryMember().setFeesOwed(checkedOutBook.getLibraryMember().getFeesOwed()+fees);
+            LibraryMemberEntity libraryMemberEntity = libraryMemberService.getEntityById(checkedOutBook.getLibraryMember().getId()).get();
+            libraryMemberEntity.setFeesOwed(checkedOutBook.getLibraryMember().getFeesOwed());
+            libraryMemberService.updateEntity(checkedOutBook.getLibraryMember().getId(),libraryMemberEntity);
+            BookEntity bookEntity = bookService.getEntityById(checkedOutBook.getBook().getId()).get();
+            bookEntity.setNumberCheckedOut(bookEntity.getNumberCheckedOut()-1);
+            bookService.updateEntity(bookEntity.getId(), bookEntity);
             deleteEntity(checkedOutBook.getId());
 
         }catch (Exception e){
             System.out.println("failed to delete book");
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
         return true;

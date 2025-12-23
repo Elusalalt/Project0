@@ -21,7 +21,7 @@ public class GenreService implements ServiceInterface<GenreEntity, Genre>{
             Integer newId = genreDAO.create(genreEntity);
             return newId;
         }catch(SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return -1;
         }
     }
@@ -36,7 +36,7 @@ public class GenreService implements ServiceInterface<GenreEntity, Genre>{
 
             return genreEntity;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -47,7 +47,7 @@ public class GenreService implements ServiceInterface<GenreEntity, Genre>{
             List<GenreEntity> genreEntities = genreDAO.findAll();
             return genreEntities;
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
@@ -63,7 +63,7 @@ public class GenreService implements ServiceInterface<GenreEntity, Genre>{
             return genreDAO.deleteById(id);
         }catch(SQLException e){
             System.out.println("unable to delete, SQL exception");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return false;
     }
@@ -94,7 +94,7 @@ public class GenreService implements ServiceInterface<GenreEntity, Genre>{
             }
 
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -113,7 +113,7 @@ public class GenreService implements ServiceInterface<GenreEntity, Genre>{
                 throw new RuntimeException("GenreEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -123,7 +123,7 @@ public class GenreService implements ServiceInterface<GenreEntity, Genre>{
             Optional<GenreEntity> genreEntity = genreDAO.findByGenreName(genreName);
             return genreEntity;
         }catch (SQLException e){
-            e.printStackTrace();
+            //e.printStackTrace();
             return Optional.empty();
         }
     }

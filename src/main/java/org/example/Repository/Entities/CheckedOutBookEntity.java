@@ -59,4 +59,15 @@ public class CheckedOutBookEntity {
     public void setFees(Double fees) {
         this.fees = fees;
     }
+
+    @Override
+    public String toString() {
+        return "CheckedOutBookEntity{" +
+                "id=" + id +
+                ", bookID=" + bookID +
+                ", libraryMemberID=" + libraryMemberID +
+                ", checkedOutDate=" + checkedOutDate +
+                ", fees=" + fees +
+                '}';
+    }
 }
